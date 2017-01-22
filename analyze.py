@@ -41,7 +41,13 @@ if __name__ == '__main__':
 		WAVE_OUTPUT_FILENAME = "%d.wav" % num
 		print(WAVE_OUTPUT_FILENAME)
 		# Recognize audio from a file
-		print "From file we recognized: %s\n" % djv.recognize(FileRecognizer, WAVE_OUTPUT_FILENAME)
+		iden = djv.recognize(FileRecognizer, WAVE_OUTPUT_FILENAME)
+		if iden != None:
+			print "From file we recognized: %s\n" % iden
+			status = open("status.txt", "w")
+			status.write(str(iden))
+			status.close()
+		
 		num += 1
-		if num == 10:
+		if num == 5:
 			num = 0

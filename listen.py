@@ -12,10 +12,6 @@ from dejavu import Dejavu
 from dejavu.recognize import FileRecognizer, MicrophoneRecognizer
 from gpio_96boards import GPIO
 
-#actbutstate = False
-#actledstate = False
-#micON = True
-
 def record(gpio):
 	if gpio.digital_read(recbut) == 1:
 		gpio.digital_write(recled, GPIO.HIGH)
@@ -110,7 +106,7 @@ if __name__ == '__main__':
 		with GPIO(pins) as gpio:
 			record(gpio)
 			micON = activate(gpio)
-		print(micON)
+		#print(micON)
 		data = stream.read(CHUNK)
 		frames.append(data)
 		count +=1
@@ -127,7 +123,7 @@ if __name__ == '__main__':
 			wf.writeframes(b''.join(frames))
 			wf.close()
 			num += 1
-			if num == 10:
+			if num == 5:
 				num = 0
 
 	stream.stop_stream()

@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
+import os
 
 import time
 
@@ -7,38 +8,27 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-iden = "4"
-eventName = "Roomba"
-dateAndTime = ""
+iden = "0"
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-@socketio.on('my event', namespace='/test')
-def test_message(message):
-    emit('my response', {'data': message['data']})
-
-@socketio.on('my broadcast event', namespace='/test')
-def test_message(message):
-    emit('my response', {'data': message['data']}, broadcast=True)
+	return render_template('index.html')
 
 @socketio.on('train')
 def train(data):
-    print("train", data)
-    event()
+	while True:
+		try:
+			status = open("status.txt", "r")
+			iden = status.read()
+			status.close()
+			emit('event', {iden:time.strftime("%c")})
+			print("*********SENT**********")
+			os.remove("status.txt")
+			time.sleep(1)
+		except IOError:
+			pass
+	time.sleep(2)
 
-def event():
-    dateAndTime = time.strftime("%c")
-    emit('event', {iden:dateAndTime})
-
-@socketio.on('connect', namespace='/test')
-def test_connect():
-    emit('my response', {'data': 'Connected'})
-
-@socketio.on('disconnect', namespace='/test')
-def test_disconnect():
-    print('Client disconnected')
 
 if __name__ == '__main__':
-    socketio.run(app)
+	socketio.run(app)
